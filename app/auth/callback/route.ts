@@ -1,0 +1,42 @@
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+
+export async function GET(req: NextRequest){
+    const requestUrl = new URL(req.url);
+    const code = requestUrl.searchParams.get("code");
+
+    if(!code) {
+        return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    const supabase = createClient(cookies())
+
+    const {data, error} = await supabase.auth.exchangeCodeForSession(code);
+
+    if(error || !data) {
+        return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    const {data: existingUser} = await supabase.from('users').select('id, role').eq('id', data.user.id).single();
+
+    if(!existingUser){
+        const {error} = await supabaseAdmin.from('users').insert({
+            id: data.user.id,
+            email: data.user.email as string,
+            name: data.user.user_metadata.full_name ?? '',
+            avatar: data.user.user_metadata.avatar_url ?? null,
+            role: "LEADER",
+        })
+
+        if(error){
+            console.error('failed to create user profile:', error.message)
+            return NextResponse.redirect(new URL("/", req.url));
+        }
+
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    return NextResponse.redirect(new URL("/member/dashboard", req.url));
+}
