@@ -13,7 +13,9 @@ export async function POST(req:NextRequest) {
             success: true
         })
     } catch (error:any) {
-        
-        return NextResponse.json({message: error.message, success: false}, {status: 500})
+        if(error.message){
+            return NextResponse.json({message: error.message, success: false}, {status: 400})
+        }
+        return NextResponse.json({message: "something went wrong", success: false}, {status: 500})
     }
 }

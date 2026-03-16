@@ -1,6 +1,6 @@
 // src/app/api/auth/auth.service.ts
 import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+// import { supabaseAdmin } from '@/lib/supabase/admin'
 import { cookies } from 'next/headers'
 
 export const registerService = async (userData: {

@@ -23,20 +23,21 @@ export async function GET(req: NextRequest){
     const {data: existingUser} = await supabase.from('users').select('id, role').eq('id', data.user.id).single();
 
     if(!existingUser){
-        const {error} = await supabase.from('users').insert({
+        const { data: userData,error} = await supabase.from('users').insert({
             id: data.session.user.id,
             email: data.session.user.email as string,
             name: data.session.user.user_metadata.full_name ?? '',
             avatar: data.session.user.user_metadata.avatar_url ?? null,
             role: "LEADER",
         })
+        // console.log(userData)
 
         if(error){
             console.error('failed to create user profile:', error.message)
             return NextResponse.redirect(new URL("/", req.url));
         }
-
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+        
+        return NextResponse.redirect(new URL("/onboarding", req.url));
     }
     return NextResponse.redirect(new URL("/member/dashboard", req.url));
 }
