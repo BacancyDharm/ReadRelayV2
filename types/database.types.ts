@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       users: {
         Row: {
+          avatar: string | null
           created_at: string
           email: string
           id: string
@@ -23,6 +24,7 @@ export type Database = {
           role: string
         }
         Insert: {
+          avatar?: string | null
           created_at?: string
           email: string
           id?: string
@@ -30,6 +32,7 @@ export type Database = {
           role?: string
         }
         Update: {
+          avatar?: string | null
           created_at?: string
           email?: string
           id?: string

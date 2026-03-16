@@ -16,18 +16,18 @@ export async function GET(req: NextRequest){
 
     const {data, error} = await supabase.auth.exchangeCodeForSession(code);
 
-    if(error || !data) {
+    if(error || !data.session) {
         return NextResponse.redirect(new URL("/", req.url));
     }
 
     const {data: existingUser} = await supabase.from('users').select('id, role').eq('id', data.user.id).single();
 
     if(!existingUser){
-        const {error} = await supabaseAdmin.from('users').insert({
-            id: data.user.id,
-            email: data.user.email as string,
-            name: data.user.user_metadata.full_name ?? '',
-            avatar: data.user.user_metadata.avatar_url ?? null,
+        const {error} = await supabase.from('users').insert({
+            id: data.session.user.id,
+            email: data.session.user.email as string,
+            name: data.session.user.user_metadata.full_name ?? '',
+            avatar: data.session.user.user_metadata.avatar_url ?? null,
             role: "LEADER",
         })
 

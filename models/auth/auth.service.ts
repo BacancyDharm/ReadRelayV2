@@ -20,7 +20,7 @@ export const registerService = async (userData: {
     throw new Error(authError?.message ?? 'Signup failed')
   }
 
-  const { data, error: profileError } = await supabaseAdmin
+  const { data, error: profileError } = await supabase 
     .from('users')
     .insert({
       id:                  authData.user.id,  // ← must come from authData

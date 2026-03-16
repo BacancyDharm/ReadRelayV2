@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:generate:types": "supabase gen types typescript --project-id oggelhywbpakbuynotdh > ./types/database.types.ts",
-    "db:create-migration": "supabase migration new --name",
-    "db:push": "supabase db push && supabase gen types typescript --project-id oggelhywbpakbuynotdh > ./types/database.types.ts"
+    "db:generate:types": "npx supabase gen types typescript --project-id oggelhywbpakbuynotdh > ./types/database.types.ts",
+    "db:create-migration": "npx supabase migration new",
+    "db:push": "npx supabase db push && npx supabase gen types typescript --project-id oggelhywbpakbuynotdh > ./types/database.types.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
