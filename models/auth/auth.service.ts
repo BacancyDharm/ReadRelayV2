@@ -8,6 +8,7 @@ export const registerService = async (userData: {
   email:    string
   password: string
   role:     string
+  onboarding: boolean
 }) => {
   const supabase = createClient(cookies())
 
@@ -27,6 +28,7 @@ export const registerService = async (userData: {
       name:                userData.name,
       email:               userData.email,
       role:                userData.role,
+      onboarding:          false
     })
     .select('*')
     .single()
@@ -51,6 +53,22 @@ export const loginService = async (userData: {
 
   if (error || !data.user) {
     throw new Error(error?.message ?? 'Invalid email or password')
+  }
+
+  const {data: existingUser, error: existingUserError} = await supabase.from('users').select('id, role, onboarding').eq('id', data.user.id).single();
+
+  if(!existingUser){
+    //create a user
+    const {data: userData, error} = await supabase.from('users').insert({
+      id: data.session.user.id,
+      email: data.session.user.email as string,
+      role: "LEADER",
+      onboarding: false
+    })
+
+    if(error){
+      throw new Error(error.message)
+    }
   }
 
   const { data: profile, error: profileError } = await supabase

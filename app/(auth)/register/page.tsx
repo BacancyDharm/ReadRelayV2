@@ -38,7 +38,7 @@ export default function RegisterPage() {
         body: JSON.stringify({...data, role:"LEADER"}),
       })
       if(res.ok){
-        router.push('/')        
+        router.push('/login')        
       }else{
         const error = await res.json()
         setErrors(error.message)

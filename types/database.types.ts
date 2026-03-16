@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_clubs: {
+        Row: {
+          club_leader_id: string | null
+          created_at: string
+          description: string | null
+          genre: string[] | null
+          id: string
+          max_members: number | null
+          name: string
+          privacy: Database["public"]["Enums"]["privacy_type"]
+          updated_at: string
+        }
+        Insert: {
+          club_leader_id?: string | null
+          created_at?: string
+          description?: string | null
+          genre?: string[] | null
+          id?: string
+          max_members?: number | null
+          name: string
+          privacy: Database["public"]["Enums"]["privacy_type"]
+          updated_at?: string
+        }
+        Update: {
+          club_leader_id?: string | null
+          created_at?: string
+          description?: string | null
+          genre?: string[] | null
+          id?: string
+          max_members?: number | null
+          name?: string
+          privacy?: Database["public"]["Enums"]["privacy_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_club_club_leader_id_fkey"
+            columns: ["club_leader_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar: string | null
@@ -21,6 +65,7 @@ export type Database = {
           email: string
           id: string
           name: string | null
+          onboarding: boolean
           role: string
         }
         Insert: {
@@ -29,6 +74,7 @@ export type Database = {
           email: string
           id?: string
           name?: string | null
+          onboarding?: boolean
           role?: string
         }
         Update: {
@@ -37,6 +83,7 @@ export type Database = {
           email?: string
           id?: string
           name?: string | null
+          onboarding?: boolean
           role?: string
         }
         Relationships: []
@@ -49,7 +96,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      privacy_type: "public" | "private"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -176,6 +223,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      privacy_type: ["public", "private"],
+    },
   },
 } as const

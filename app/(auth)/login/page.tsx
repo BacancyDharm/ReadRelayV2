@@ -26,7 +26,7 @@ export default function LoginPage() {
     });
     console.log(res)
     if(res.ok){
-      router.push("/");
+      router.push("/onboarding");
     }else{
       const error = await res.json()
       console.log(error)
