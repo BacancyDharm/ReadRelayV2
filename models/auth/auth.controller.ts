@@ -10,7 +10,6 @@ export const registerController = async (req: NextRequest) => {
     throw new Error(parsedData.error.issues[0].message);
   }
   
-
   const user = await registerService(body);
 
   return user;

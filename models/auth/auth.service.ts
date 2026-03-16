@@ -1,6 +1,8 @@
 // src/app/api/auth/auth.service.ts
 import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { sign } from 'crypto'
+import { routeModule } from 'next/dist/build/templates/pages'
+// import { supabaseAdmin } from '@/lib/supabase/admin'
 import { cookies } from 'next/headers'
 
 export const registerService = async (userData: {
@@ -8,6 +10,7 @@ export const registerService = async (userData: {
   email:    string
   password: string
   role:     string
+  onboarding: boolean
 }) => {
   const supabase = createClient(cookies())
 
@@ -27,6 +30,7 @@ export const registerService = async (userData: {
       name:                userData.name,
       email:               userData.email,
       role:                userData.role,
+      onboarding:          false
     })
     .select('*')
     .single()
@@ -49,19 +53,71 @@ export const loginService = async (userData: {
     password: userData.password,
   })
 
-  if (error || !data.user) {
-    throw new Error(error?.message ?? 'Invalid email or password')
+  if (!error || data.user) {
+    const {data: profile, error: profileError} = await supabase
+      .from('users')
+      .select('id, name, email, role, onboarding')
+      .eq('id', data.session?.user.id)
+      .single()
+    
+    if(profileError || !profile) {
+      throw new Error('Account setup incomplete')
+    }
+
+    return {profile, isNewUser: false}
   }
 
-  const { data: profile, error: profileError } = await supabase
+  const isUserNotFound =
+    error?.message?.toLowerCase().includes('invalid login credentials') ||
+    error?.message?.toLowerCase().includes('user not found')
+
+  if (!isUserNotFound) {
+    throw new Error(error?.message ?? 'Login failed')
+  }
+
+  const {data: authData, error: signUpError} = await supabase.auth.signUp({
+    email:    userData.email,
+    password: userData.password,
+  })
+
+  if(signUpError || !authData.user) {
+    throw new Error(signUpError?.message ?? 'Signup failed')
+  }
+
+  const {data: profile, error: profileError} = await supabase
     .from('users')
-    .select('id, name, email, role')
-    .eq('id', data.user.id)
-    .single()
+    .insert({
+      id:authData.user.id,
+      email:userData.email,
+      role:'LEADER',
+      onboarding:false
+    })
 
-  if (profileError) {
-    throw new Error('Failed to fetch user profile')
+    if(profileError) {
+      throw new Error(profileError.message)
+    }
+
+
+  const { data: newSession, error: newSignInError } = await supabase.auth.signInWithPassword({
+    email:    userData.email,
+    password: userData.password,
+  })
+
+  if (newSignInError) {
+    throw new Error(newSignInError.message)
   }
 
-  return profile
+  const {data: newProfile, error: newProfileError} = await supabase
+    .from('users')
+    .select('id, name, email, role, onboarding')
+    .eq('id', newSession.user.id)
+    .single()
+  
+    console.log("new profile is",newProfile)
+
+  if (newProfileError) {
+    throw new Error(newProfileError.message)
+  }
+  console.log("new profile is :",newProfile)
+  return {profile: newProfile, isNewUser: true}
 }
