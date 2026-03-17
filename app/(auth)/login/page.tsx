@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUser } from "@/hooks/useUser";
 
 type FormData = {
   email: string;
@@ -15,7 +16,8 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
   const { register, handleSubmit } = useForm<FormData>();
-  const [erros, setErrors] = useState<string>();
+  const [errors, setErrors] = useState<string>();
+  const {setUser} =  useUser();
   const onSubmit = async (data: FormData) => {
     const res = await fetch("/api/auth/login", {
       method: "POST",
@@ -24,8 +26,10 @@ export default function LoginPage() {
       },
       body: JSON.stringify(data),
     });
-    console.log(res)
     if(res.ok){
+      const user = await res.json()
+      setUser(user.data.profile)
+      if(user.role === "LEADER" && user.onboarding) router.push("/dashboard")
       router.push("/onboarding");
     }else{
       const error = await res.json()
@@ -34,7 +38,7 @@ export default function LoginPage() {
     }
   };
   async function handleGoogleSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error, data } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
@@ -68,7 +72,7 @@ export default function LoginPage() {
       >
         Continue with Google
       </button>
-      {erros && <p className="text-red-600">{erros}</p>}
+      {errors && <p className="text-red-600">{errors}</p>}
     </form>
   );
 }
