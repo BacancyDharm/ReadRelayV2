@@ -1,17 +1,21 @@
 'use client'
 
 import { createClient } from "@/lib/supabase/client"
+import { useErrorOverlayReducer } from "next/dist/next-devtools/dev-overlay/shared"
 import { createContext, useEffect, useState } from "react"
 
 type UserProfile = {
-    id: string
-    name: string
-    email: string
-    role: 'LEADER' | 'MEMBER' | 'ADMIN'
-    onboarding: boolean
-    avatar: string | null
+  id:                  string
+  name:                string
+  email:               string
+  role:                'LEADER' | 'MEMBER' | 'ADMIN'
+  username_slug:       string | null
+  avatar:              string | null
+  onboarding_complete: boolean
+  headline:            string | null   
+  bio:                 string | null  
+  genre_preferences:   string[] | null 
 }
-
 type UserContextType = {
     user: UserProfile | null
     loading: boolean
@@ -46,7 +50,6 @@ export function UserProvider({children}: {children: React.ReactNode}){
             };
 
             const profile = await fetchUserProfile(authUser.id)
-            console.log("profile is",profile)
             setUser(profile)
         } finally {
             setLoading(false)

@@ -26,7 +26,7 @@ export const registerService = async (userData: {
   const { data, error: profileError } = await supabase 
     .from('users')
     .insert({
-      id:                  authData.user.id,  // ← must come from authData
+      id:                  authData.user.id,  
       name:                userData.name,
       email:               userData.email,
       role:                userData.role,
