@@ -4,7 +4,6 @@ import { loginSchema, registrationSchema } from "./auth.validator";
 
 export const registerController = async (req: NextRequest) => {
   const body = await req.json();
-
   const parsedData = registrationSchema.safeParse(body);
   if (!parsedData.success) {
     throw new Error(parsedData.error.issues[0].message);

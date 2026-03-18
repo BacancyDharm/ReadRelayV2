@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUser } from "@/hooks/useUser";
@@ -28,7 +27,9 @@ export default function LoginPage() {
     });
     if(res.ok){
       const user = await res.json()
+      
       setUser(user.data.profile)
+      
       if(user.role === "LEADER" && user.onboarding) router.push("/dashboard")
       router.push("/onboarding");
     }else{

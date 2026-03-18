@@ -61,8 +61,11 @@ export type Database = {
       users: {
         Row: {
           avatar: string | null
+          bio: string | null
           created_at: string
           email: string
+          genre_preference: string[] | null
+          headline: string | null
           id: string
           name: string | null
           onboarding: boolean
@@ -70,8 +73,11 @@ export type Database = {
         }
         Insert: {
           avatar?: string | null
+          bio?: string | null
           created_at?: string
           email: string
+          genre_preference?: string[] | null
+          headline?: string | null
           id?: string
           name?: string | null
           onboarding?: boolean
@@ -79,8 +85,11 @@ export type Database = {
         }
         Update: {
           avatar?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
+          genre_preference?: string[] | null
+          headline?: string | null
           id?: string
           name?: string | null
           onboarding?: boolean

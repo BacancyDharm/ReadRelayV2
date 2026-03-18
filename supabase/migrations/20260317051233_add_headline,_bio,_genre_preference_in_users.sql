@@ -1,0 +1,3 @@
+ALTER TABLE users ADD COLUMN headline VARCHAR(30)
+ALTER TABLE users ADD COLUMN bio VARCHAR(300)
+ALTER TABLE users ADD COLUMN genre_preference TEXT[]
