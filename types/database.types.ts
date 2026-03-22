@@ -58,6 +58,24 @@ export type Database = {
           },
         ]
       }
+      test: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           avatar: string | null
@@ -68,8 +86,9 @@ export type Database = {
           headline: string | null
           id: string
           name: string | null
+          notification_preferences: Json
           onboarding: boolean
-          role: string
+          role: Database["public"]["Enums"]["role"]
         }
         Insert: {
           avatar?: string | null
@@ -80,8 +99,9 @@ export type Database = {
           headline?: string | null
           id?: string
           name?: string | null
+          notification_preferences?: Json
           onboarding?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["role"]
         }
         Update: {
           avatar?: string | null
@@ -92,8 +112,9 @@ export type Database = {
           headline?: string | null
           id?: string
           name?: string | null
+          notification_preferences?: Json
           onboarding?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["role"]
         }
         Relationships: []
       }
@@ -106,6 +127,7 @@ export type Database = {
     }
     Enums: {
       privacy_type: "public" | "private"
+      role: "LEADER" | "ADMIN" | "GUEST" | "MEMBER"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -234,6 +256,7 @@ export const Constants = {
   public: {
     Enums: {
       privacy_type: ["public", "private"],
+      role: ["LEADER", "ADMIN", "GUEST", "MEMBER"],
     },
   },
 } as const

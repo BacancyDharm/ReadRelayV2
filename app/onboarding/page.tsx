@@ -41,7 +41,6 @@ export default function OnboardingPage(){
        const namecheck = await fetch(`/api/checkname?username=${debouncedName}`)
        const isNameTaken = await namecheck.json()
        if(isNameTaken.nameTaken){
-        console.log(isNameTaken.nameTaken)
         setErrors("Name already taken try another username")
        }else{
         setErrors('')

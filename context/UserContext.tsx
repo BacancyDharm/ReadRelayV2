@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from "@/lib/supabase/client"
-import { useErrorOverlayReducer } from "next/dist/next-devtools/dev-overlay/shared"
+import { projectUpdateInfoSubscribe } from "next/dist/build/swc/generated-native"
 import { createContext, useEffect, useState } from "react"
 
 type UserProfile = {
@@ -19,7 +19,6 @@ type UserProfile = {
 type UserContextType = {
     user: UserProfile | null
     loading: boolean
-    setUser: (user: UserProfile | null) => void
     logout: () => Promise<void>
     refreshUser: () => Promise<void>
 }
@@ -61,6 +60,7 @@ export function UserProvider({children}: {children: React.ReactNode}){
         if(!authUser) return
 
         const profile = await fetchUserProfile(authUser.id)
+        console.log("after refresh", profile)
         setUser(profile)
     }
 
@@ -88,7 +88,7 @@ export function UserProvider({children}: {children: React.ReactNode}){
     }, [])
 
     return (
-        <UserContext.Provider value={{user, loading, setUser, logout, refreshUser}}>
+        <UserContext.Provider value={{user, loading,  logout, refreshUser}}>
             {children}
         </UserContext.Provider>
     )
