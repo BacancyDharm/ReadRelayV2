@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "./lib/supabase/proxy";
-import path from "path";
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -17,6 +16,8 @@ export async function proxy(req: NextRequest) {
   pathname.startsWith("/auth");
 
   if (isPublicRoute) return supabaseResponse;
+  
+  if (!user) return redirectTo("/login");
 
   const {data: profile} = await supabase.from('users').select('*').eq('id', user!.id).single()
 
@@ -29,8 +30,6 @@ export async function proxy(req: NextRequest) {
 
   return supabaseResponse
 
-
-  
 }
 
 export const config = {
