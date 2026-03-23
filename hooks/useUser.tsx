@@ -1,9 +1,10 @@
+"use client";
 import { UserContext } from "@/context/UserContext";
-import { error } from "console";
+
 import { useContext } from "react";
 
-export const useUser = () => {
-    const context = useContext(UserContext)
-    if(!context) throw new Error('useUser must be used within a UserProvider')
-    return context
+export function useUser() {
+  const context = useContext(UserContext)
+  if (!context) throw new Error('useUser must be used inside UserProvider')
+  return context
 }

@@ -1,4 +1,3 @@
-// src/app/api/auth/login/route.ts
 import { loginController } from '@/models/auth/auth.controller'
 import { NextRequest, NextResponse } from 'next/server'
 

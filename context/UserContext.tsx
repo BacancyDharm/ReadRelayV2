@@ -1,95 +1,79 @@
 'use client'
 
-import { createClient } from "@/lib/supabase/client"
-import { useErrorOverlayReducer } from "next/dist/next-devtools/dev-overlay/shared"
-import { createContext, useEffect, useState } from "react"
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 type UserProfile = {
-  id:                  string
-  name:                string
-  email:               string
-  role:                'LEADER' | 'MEMBER' | 'ADMIN'
-  username_slug:       string | null
-  avatar:              string | null
-  onboarding_complete: boolean
-  headline:            string | null   
-  bio:                 string | null  
-  genre_preferences:   string[] | null 
+  id: string
+  role: 'ADMIN' | 'LEADER' | 'MEMBER' | 'GUEST'
+  email: string
+  name: string
+  bio: string | null
+  avatar: string | null
+  onboarding: boolean
+  headline: string
+  genre_preference: string[]
+  notification_preferences: string
+  created_at: string
 }
+
 type UserContextType = {
-    user: UserProfile | null
-    loading: boolean
-    setUser: (user: UserProfile | null) => void
-    logout: () => Promise<void>
-    refreshUser: () => Promise<void>
+  user: UserProfile | null
+  isLoading: boolean
+  refresh: () => Promise<void>
 }
 
-export const UserContext = createContext<UserContextType | null>(null)
+export const UserContext = createContext<UserContextType>({
+  user: null,
+  isLoading: true,
+  refresh: async () => {},
+})
 
-export function UserProvider({children}: {children: React.ReactNode}){
-    const [user, setUser] = useState<UserProfile | null>(null)
-    const [loading, setLoading] = useState(true)
-    const supabase = createClient()
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const supabase = createClient()
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-    async function fetchUserProfile(userId:string) {
-        const {data, error} = await supabase.from('users').select('*').eq('id', userId).single()
+  const fetchProfile = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser()
 
-        if(error || !data) return null
-
-        return data as UserProfile
+    if (!authUser) {
+      setUser(null)
+      setIsLoading(false)
+      return
     }
 
-    async function loadUser() {
-        setLoading(true)
-        try {
-            const {data:{user: authUser}} = await supabase.auth.getUser();
+    const { data: profile } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', authUser.id)
+      .single()
 
-            if(!authUser) {
-                setUser(null)
-                return
-            };
+    setUser(profile ?? null)
+    setIsLoading(false)
+  }, [supabase])
 
-            const profile = await fetchUserProfile(authUser.id)
-            setUser(profile)
-        } finally {
-            setLoading(false)
-        }
-    }
+  useEffect(() => {
+    fetchProfile()
 
-    async function refreshUser() {
-        const {data: {user: authUser}} = await supabase.auth.getUser()
-        if(!authUser) return
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') fetchProfile()
+      if (event === 'SIGNED_OUT') setUser(null)
+    })
 
-        const profile = await fetchUserProfile(authUser.id)
-        setUser(profile)
-    }
+    return () => subscription.unsubscribe()
+  }, [fetchProfile, supabase])
 
-    async function logout() {
-        await supabase.auth.signOut()
-        setUser(null)
-    }
-
-    useEffect(() => {
-        loadUser()
-
-        const {data: { subscription }} = supabase.auth.onAuthStateChange(async (event, session) => {
-            if(event === 'SIGNED_IN' && session?.user) {
-               const profile = await fetchUserProfile(session.user.id)
-               setUser(profile)
-               setLoading(false)
-            }
-            if(event === 'SIGNED_OUT') {
-                setUser(null)
-                setLoading(false)
-            }
-        })
-
-        return () => subscription.unsubscribe()
-    }, [])
-
-    return (
-        <UserContext.Provider value={{user, loading, setUser, logout, refreshUser}}>
-            {children}
-        </UserContext.Provider>
-    )
+  return (
+    <UserContext.Provider value={{ user, isLoading, refresh: fetchProfile }}>
+      {children}
+    </UserContext.Provider>
+  )
 }
+

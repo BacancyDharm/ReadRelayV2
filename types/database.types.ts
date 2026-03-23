@@ -14,44 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
-      book_clubs: {
+      clubs: {
         Row: {
-          club_leader_id: string | null
           created_at: string
           description: string | null
-          genre: string[] | null
+          genre_tags: string[] | null
           id: string
-          max_members: number | null
+          is_public: boolean
+          leader_id: string
+          max_members: number
           name: string
-          privacy: Database["public"]["Enums"]["privacy_type"]
-          updated_at: string
+          slug: string
         }
         Insert: {
-          club_leader_id?: string | null
           created_at?: string
           description?: string | null
-          genre?: string[] | null
+          genre_tags?: string[] | null
           id?: string
-          max_members?: number | null
+          is_public?: boolean
+          leader_id: string
+          max_members?: number
           name: string
-          privacy: Database["public"]["Enums"]["privacy_type"]
-          updated_at?: string
+          slug: string
         }
         Update: {
-          club_leader_id?: string | null
           created_at?: string
           description?: string | null
-          genre?: string[] | null
+          genre_tags?: string[] | null
           id?: string
-          max_members?: number | null
+          is_public?: boolean
+          leader_id?: string
+          max_members?: number
           name?: string
-          privacy?: Database["public"]["Enums"]["privacy_type"]
-          updated_at?: string
+          slug?: string
         }
         Relationships: [
           {
-            foreignKeyName: "book_club_club_leader_id_fkey"
-            columns: ["club_leader_id"]
+            foreignKeyName: "clubs_leader_id_fkey"
+            columns: ["leader_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -61,30 +61,42 @@ export type Database = {
       users: {
         Row: {
           avatar: string | null
+          bio: string | null
           created_at: string
           email: string
+          genre_preference: string[] | null
+          headline: string | null
           id: string
           name: string | null
+          notification_preferences: Json
           onboarding: boolean
-          role: string
+          role: Database["public"]["Enums"]["role"]
         }
         Insert: {
           avatar?: string | null
+          bio?: string | null
           created_at?: string
           email: string
+          genre_preference?: string[] | null
+          headline?: string | null
           id?: string
           name?: string | null
+          notification_preferences?: Json
           onboarding?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["role"]
         }
         Update: {
           avatar?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
+          genre_preference?: string[] | null
+          headline?: string | null
           id?: string
           name?: string | null
+          notification_preferences?: Json
           onboarding?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["role"]
         }
         Relationships: []
       }
@@ -97,6 +109,7 @@ export type Database = {
     }
     Enums: {
       privacy_type: "public" | "private"
+      role: "LEADER" | "ADMIN" | "GUEST" | "MEMBER"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -225,6 +238,7 @@ export const Constants = {
   public: {
     Enums: {
       privacy_type: ["public", "private"],
+      role: ["LEADER", "ADMIN", "GUEST", "MEMBER"],
     },
   },
 } as const

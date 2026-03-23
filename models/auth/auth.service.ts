@@ -1,8 +1,4 @@
-// src/app/api/auth/auth.service.ts
 import { createClient } from '@/lib/supabase/server'
-import { sign } from 'crypto'
-import { routeModule } from 'next/dist/build/templates/pages'
-// import { supabaseAdmin } from '@/lib/supabase/admin'
 import { cookies } from 'next/headers'
 
 export const registerService = async (userData: {
@@ -13,7 +9,7 @@ export const registerService = async (userData: {
   onboarding: boolean
 }) => {
   const supabase = createClient(cookies())
-
+  
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email:    userData.email,
     password: userData.password,
@@ -23,7 +19,7 @@ export const registerService = async (userData: {
     throw new Error(authError?.message ?? 'Signup failed')
   }
 
-  const { data, error: profileError } = await supabase 
+  const { data, error: profileError } = await supabase
     .from('users')
     .insert({
       id:                  authData.user.id,  
@@ -53,7 +49,7 @@ export const loginService = async (userData: {
     password: userData.password,
   })
 
-  if (!error || data.user) {
+  if (!error && data.user) {
     const {data: profile, error: profileError} = await supabase
       .from('users')
       .select('id, name, email, role, onboarding')
@@ -70,10 +66,10 @@ export const loginService = async (userData: {
   const isUserNotFound =
     error?.message?.toLowerCase().includes('invalid login credentials') ||
     error?.message?.toLowerCase().includes('user not found')
-
   if (!isUserNotFound) {
     throw new Error(error?.message ?? 'Login failed')
   }
+
 
   const {data: authData, error: signUpError} = await supabase.auth.signUp({
     email:    userData.email,
@@ -81,7 +77,8 @@ export const loginService = async (userData: {
   })
 
   if(signUpError || !authData.user) {
-    throw new Error(signUpError?.message ?? 'Signup failed')
+    console.log('------------', signUpError?.message)
+    throw new Error("Invalid password")
   }
 
   const {data: profile, error: profileError} = await supabase
@@ -113,11 +110,9 @@ export const loginService = async (userData: {
     .eq('id', newSession.user.id)
     .single()
   
-    console.log("new profile is",newProfile)
 
   if (newProfileError) {
     throw new Error(newProfileError.message)
   }
-  console.log("new profile is :",newProfile)
   return {profile: newProfile, isNewUser: true}
 }
