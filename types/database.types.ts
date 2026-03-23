@@ -14,67 +14,49 @@ export type Database = {
   }
   public: {
     Tables: {
-      book_clubs: {
+      clubs: {
         Row: {
-          club_leader_id: string | null
           created_at: string
           description: string | null
-          genre: string[] | null
+          genre_tags: string[] | null
           id: string
-          max_members: number | null
+          is_public: boolean
+          leader_id: string
+          max_members: number
           name: string
-          privacy: Database["public"]["Enums"]["privacy_type"]
-          updated_at: string
+          slug: string
         }
         Insert: {
-          club_leader_id?: string | null
           created_at?: string
           description?: string | null
-          genre?: string[] | null
+          genre_tags?: string[] | null
           id?: string
-          max_members?: number | null
+          is_public?: boolean
+          leader_id: string
+          max_members?: number
           name: string
-          privacy: Database["public"]["Enums"]["privacy_type"]
-          updated_at?: string
+          slug: string
         }
         Update: {
-          club_leader_id?: string | null
           created_at?: string
           description?: string | null
-          genre?: string[] | null
+          genre_tags?: string[] | null
           id?: string
-          max_members?: number | null
+          is_public?: boolean
+          leader_id?: string
+          max_members?: number
           name?: string
-          privacy?: Database["public"]["Enums"]["privacy_type"]
-          updated_at?: string
+          slug?: string
         }
         Relationships: [
           {
-            foreignKeyName: "book_club_club_leader_id_fkey"
-            columns: ["club_leader_id"]
+            foreignKeyName: "clubs_leader_id_fkey"
+            columns: ["leader_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
-      }
-      test: {
-        Row: {
-          created_at: string
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       users: {
         Row: {

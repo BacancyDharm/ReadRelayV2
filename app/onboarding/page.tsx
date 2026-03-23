@@ -9,32 +9,27 @@ import {useForm} from 'react-hook-form'
 type FormData = {
     headline: string;
     bio: string;
-    genre_preferences: string[];
+    genre_preference: string[];
     name: string
 };
 
 export default function OnboardingPage(){
   const genreRef = useRef<HTMLInputElement>(null);
     const {user} = useUser();
+    console.log("user in onbarding is", user)
     const router = useRouter();   
     const {register, handleSubmit, setValue, watch }= useForm<FormData>({
         defaultValues: {
             headline: user?.headline || '',
             bio: user?.bio || '',
-            genre_preferences: user?.genre_preferences || [],
+            genre_preference : user?.genre_preference|| [],
             name: user?.name || ''
         }
     })
-    const genre = watch('genre_preferences');
+    const genre = watch('genre_preference');
     const nameValue = watch('name')
     const debouncedName = useDebounce(nameValue, 1000)
-    console.log(debouncedName)
     const [errors, setErrors] = useState<string>('');
-
-    if(user=== null || user.role !== "LEADER"){
-        console.log("user is null")
-        router.push('/login');
-    }
 
     useEffect(() => {
      const isAvailable = async () => {
@@ -54,12 +49,12 @@ export default function OnboardingPage(){
     const addGenre = () => {
       const val = genreRef.current?.value.trim();
       if(!val) return;
-      setValue('genre_preferences', [...genre, val]);
+      setValue('genre_preference', [...genre, val]);
       genreRef.current!.value = '';
     }
 
     const removeGenre = (item: string) => {
-      setValue('genre_preferences', genre.filter(g => g !== item));
+      setValue('genre_preference', genre.filter(g => g !== item));
     }
     
     const onSubmit = async (data: FormData) => {

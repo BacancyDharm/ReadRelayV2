@@ -16,6 +16,7 @@ export const registerController = async (req: NextRequest) => {
 
 export const loginController = async (req: NextRequest) => {
     const body = await req.json();
+    console.log("body is", body)
     const parsedData = loginSchema.safeParse(body);
     if(!parsedData.success) throw new Error(parsedData.error.issues[0].message)
     const user = await loginService(body)

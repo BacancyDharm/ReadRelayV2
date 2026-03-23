@@ -23,7 +23,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
   const [errors, setErrors] = useState<string>();
-  const { refreshUser } = useUser();
+  const { refresh, user } = useUser();
   const onSubmit = async (data: FormData) => {
     const res = await fetch("/api/auth/login", {
       method: "POST",
@@ -32,8 +32,10 @@ export default function LoginPage() {
       },
       body: JSON.stringify(data),
     });
+    
     if (res.ok) {
-      refreshUser();
+      refresh();
+      console.log("user after refresh", user);
       router.push("/onboarding");
 
     } else {
