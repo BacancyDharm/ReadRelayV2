@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      books: {
+        Row: {
+          authors: string[]
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          google_volume_id: string | null
+          id: string
+          isbn_10: string | null
+          isbn_13: string | null
+          page_count: number | null
+          title: string
+        }
+        Insert: {
+          authors: string[]
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          google_volume_id?: string | null
+          id?: string
+          isbn_10?: string | null
+          isbn_13?: string | null
+          page_count?: number | null
+          title: string
+        }
+        Update: {
+          authors?: string[]
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          google_volume_id?: string | null
+          id?: string
+          isbn_10?: string | null
+          isbn_13?: string | null
+          page_count?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
       clubs: {
         Row: {
           created_at: string

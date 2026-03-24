@@ -32,7 +32,8 @@ export default function LoginPage() {
       },
       body: JSON.stringify(data),
     });
-
+    
+    console.log("res ok", res.ok)
     if (res.ok) {
       refresh();
       console.log("user after refresh", user);

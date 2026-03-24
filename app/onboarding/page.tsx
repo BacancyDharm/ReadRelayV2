@@ -9,16 +9,17 @@ import { useRouter } from 'next/navigation';
 
 const OnboardingForm = () => {
   const router = useRouter();
-  const {user, loading} = useUser();
+  const {user, isLoading} = useUser();
   const {step} = useOnboarding();
   
+  if(!user && isLoading) return <div>Loading...</div>;
   
-  console.log("user is ", "-------------", user)
+  
   if(!user){
-    router.push('/login');
+    console.log("not user")
   } 
-  if(user?.onboarding_complete) router.push('/dashboard');
-  if (loading) return <div>Loading...</div>;
+  if(user?.onboarding) router.push('/dashboard');
+  if (isLoading) return <div>Loading...</div>;
   return (
     <div>
       {step === 1  && <Step1/>}
