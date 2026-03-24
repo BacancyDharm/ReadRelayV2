@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_club_status: {
+        Row: {
+          added_at: string
+          book_id: string
+          club_id: string
+          id: string
+          staus: Database["public"]["Enums"]["book_status"]
+        }
+        Insert: {
+          added_at?: string
+          book_id: string
+          club_id: string
+          id?: string
+          staus?: Database["public"]["Enums"]["book_status"]
+        }
+        Update: {
+          added_at?: string
+          book_id?: string
+          club_id?: string
+          id?: string
+          staus?: Database["public"]["Enums"]["book_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_club_status_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_club_status_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           authors: string[]
@@ -147,6 +186,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      book_status: "going" | "completed"
       privacy_type: "public" | "private"
       role: "LEADER" | "ADMIN" | "GUEST" | "MEMBER"
     }
@@ -276,6 +316,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      book_status: ["going", "completed"],
       privacy_type: ["public", "private"],
       role: ["LEADER", "ADMIN", "GUEST", "MEMBER"],
     },
