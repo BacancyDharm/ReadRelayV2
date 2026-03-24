@@ -1,17 +1,23 @@
 import { useOnboarding } from "@/hooks/useOnboarding";
-import { useUser } from "@/hooks/useUser";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Step1 = () => {
-  const { form, setStep, step } = useOnboarding();
+  const { form, setStep } = useOnboarding();
   const [error, setError] = useState("");
-  const {user} = useUser();
   const checkAndNext = async () => {
    const valid = await form.trigger('name') 
+   console.log(valid, "valid")
    if(!valid) return
-    const res = await fetch(`/api/checkname?username=${form.getValues().name}`);
+    const res = await fetch('/api/checkname', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: form.getValues().name }),
+    });
+    console.log(res)
     const isNameTaken = await res.json();
-    // console.log(isNameTaken.nameTaken)
+    console.log("name taken", isNameTaken.nameTaken)
     if (isNameTaken.nameTaken) {
       setError("Name already taken try another username");
       return;

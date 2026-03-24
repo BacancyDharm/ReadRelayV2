@@ -11,6 +11,10 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   };
 
+if (pathname.startsWith('/api')) {
+  return NextResponse.next();
+}
+
   const isPublicRoute =
     pathname === "/" || pathname === "/login" || pathname === "/register";
   pathname.startsWith("/auth");
@@ -18,6 +22,7 @@ export async function proxy(req: NextRequest) {
   if (isPublicRoute) return supabaseResponse;
   
   if (!user) return redirectTo("/login");
+  // console.log(user)
 
   const {data: profile} = await supabase.from('users').select('*').eq('id', user!.id).single()
 
