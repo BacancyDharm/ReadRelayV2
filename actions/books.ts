@@ -1,6 +1,5 @@
-import { searchBooks } from "@/lib/google-books/client"
-
-
+'use server'
+import { searchBooks } from "@/lib/google-books/server"
 export async function searchBook(query: string) {
     if(!query || query.trim().length < 2){
         return {

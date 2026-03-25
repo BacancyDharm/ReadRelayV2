@@ -2,7 +2,7 @@ const API_key = process.env.GOOGLE_BOOKS_API_KEY!
 const BASE_URL = 'https://www.googleapis.com/books/v1'
 
 export async function searchBooks(query: string) {
-    const url = `${BASE_URL}/volumes?q=${query}`
+    const url = `${BASE_URL}/volumes?q=${query}&key=${API_key}&maxResults=8`
 
     const res = await fetch(url)
 
