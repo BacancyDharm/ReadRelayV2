@@ -1,27 +1,29 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import Header from "@/components/Header";
-import SearchBar from "../components/SearchBar";
-import { useUser } from "@/hooks/useUser";
+import ClubWorkSpace from "../components/ClubWorkSpace";
+import { getCurrentBook } from "@/actions/books";
 
 
 export default async function ClubPage({params} : {params: {id: string}}){
     const supabase = createClient(cookies());
-    const {id: clubId} = await params;
+
     const {data: {user}} = await supabase.auth.getUser()
     if(!user) redirect('/login')
-    const { data: club} = await supabase.from('clubs').select('*').eq('id', clubId).single();
+    
+    const { data: club} = await supabase.from('clubs').select('*').eq('id', (await params).id).single();
     if(!club) redirect('/dashboard')
 
-    
+    const {book} = await getCurrentBook((await params).id);
+
+    const {data:profile} = await supabase.from('users').select('id, role').eq('id', user.id).single();
+
+    const isLeader = profile?.id === club.leader_id
     
     
     return (
         <div>
-            <Header name={user?.user_metadata.name || ""} />
-            <SearchBar />
-
+           <ClubWorkSpace club={club} initialBook={book} isLeader={isLeader} /> 
         </div>
     )
 }

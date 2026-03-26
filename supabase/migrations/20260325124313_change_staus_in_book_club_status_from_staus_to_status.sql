@@ -1,0 +1,1 @@
+alter table "book_club_status" rename column "staus" to "status";

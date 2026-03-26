@@ -20,21 +20,21 @@ export type Database = {
           book_id: string
           club_id: string
           id: string
-          staus: Database["public"]["Enums"]["book_status"]
+          status: Database["public"]["Enums"]["book_status"]
         }
         Insert: {
           added_at?: string
           book_id: string
           club_id: string
           id?: string
-          staus?: Database["public"]["Enums"]["book_status"]
+          status?: Database["public"]["Enums"]["book_status"]
         }
         Update: {
           added_at?: string
           book_id?: string
           club_id?: string
           id?: string
-          staus?: Database["public"]["Enums"]["book_status"]
+          status?: Database["public"]["Enums"]["book_status"]
         }
         Relationships: [
           {
