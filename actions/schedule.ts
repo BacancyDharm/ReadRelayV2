@@ -42,7 +42,6 @@ export async function createSchedule(formData: {
     if(!user) return {error: "not authenticated"};
 
     const {data: clubBook, error: clubBookError} = await supabase.from("book_club_status").select('id, club_id, clubs(leader_id)').eq('id', club_book_id).single();
-    console.log("clubbook is",clubBook)
 
     if(!clubBook) return {error: clubBookError.message};
     

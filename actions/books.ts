@@ -95,7 +95,6 @@ export async function getCurrentBook(clubId:string) : Promise<{book: Book | null
     const {data, error} = await supabase
         .from('book_club_status')
         .select(`id, status, added_at, books (id, title, authors, description, page_count, cover_url, isbn_13)`).eq('club_id', clubId).eq('status', 'going').single();
-        console.log("currentbook is ",data)
         if(error) return { book : null}
         return {book: data}
 }
