@@ -136,6 +136,47 @@ export type Database = {
           },
         ]
       }
+      schedule_sections: {
+        Row: {
+          club_book_id: string
+          created_at: string
+          deadline: string
+          end_page: number
+          id: string
+          section_number: number
+          start_page: number
+          title: string | null
+        }
+        Insert: {
+          club_book_id: string
+          created_at?: string
+          deadline: string
+          end_page: number
+          id?: string
+          section_number: number
+          start_page: number
+          title?: string | null
+        }
+        Update: {
+          club_book_id?: string
+          created_at?: string
+          deadline?: string
+          end_page?: number
+          id?: string
+          section_number?: number
+          start_page?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_sections_club_book_id_fkey"
+            columns: ["club_book_id"]
+            isOneToOne: false
+            referencedRelation: "book_club_status"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar: string | null

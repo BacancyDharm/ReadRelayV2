@@ -11,34 +11,38 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   };
 
-if (pathname.startsWith('/api')) {
-  return NextResponse.next();
-}
-
   const isPublicRoute =
-    pathname === "/" || pathname === "/login" || pathname === "/register";
-  pathname.startsWith("/auth");
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/api");
 
   if (isPublicRoute) return supabaseResponse;
-  
+
   if (!user) return redirectTo("/login");
   // console.log(user)
 
-  const {data: profile} = await supabase.from('users').select('*').eq('id', user!.id).single()
+  const { data: profile } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", user!.id)
+    .single();
 
-  const role = profile.role
-  const onboardingComplete = profile.onboarding
+  const role = profile.role;
+  const onboardingComplete = profile.onboarding;
 
-  if(role === "LEADER" && !onboardingComplete && pathname !== "/onboarding") return redirectTo("/onboarding")
+  if (role === "LEADER" && !onboardingComplete && pathname !== "/onboarding")
+    return redirectTo("/onboarding");
 
-  if(pathname === "/onboarding" && onboardingComplete) return redirectTo("/dashboard")
+  if (pathname === "/onboarding" && onboardingComplete)
+    return redirectTo("/dashboard");
 
-  return supabaseResponse
-
+  return supabaseResponse;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-}
+};

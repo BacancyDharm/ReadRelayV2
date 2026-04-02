@@ -42,7 +42,7 @@ export async function GET(req: NextRequest){
     if(!existingUser.onboarding)
     return NextResponse.redirect(new URL("/onboarding", req.url));
 
-    if(existingUser.role ==='LEADER') return NextResponse.redirect(new URL("/leader/dashboard", req.url));
+    if(existingUser.role ==='LEADER') return NextResponse.redirect(new URL("/dashboard", req.url));
 
     return NextResponse.redirect(new URL("/member/dashboard", req.url));
 }
