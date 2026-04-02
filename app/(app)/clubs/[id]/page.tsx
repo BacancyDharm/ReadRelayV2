@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import ClubWorkSpace from "../components/ClubWorkSpace";
 import { getCurrentBook } from "@/actions/books";
+import { getSchedule } from "@/actions/schedule";
 
 
 export default async function ClubPage({params} : {params: {id: string}}){
@@ -19,11 +20,13 @@ export default async function ClubPage({params} : {params: {id: string}}){
     const {data:profile} = await supabase.from('users').select('id, role').eq('id', user.id).single();
 
     const isLeader = profile?.id === club.leader_id
+
+    const sections = book ? (await getSchedule(book.id)).sections : []
     
     
     return (
         <div>
-           <ClubWorkSpace club={club} initialBook={book} isLeader={isLeader} /> 
+           <ClubWorkSpace club={club} initialBook={book} isLeader={isLeader} initialSections={sections}/> 
         </div>
     )
 }
