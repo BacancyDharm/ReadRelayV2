@@ -12,7 +12,7 @@ type UserCredentials = {
 type AuthContextType = {
     user: UserProfile | null,
     isLoading: boolean,
-    refresh: () = Promise<void>
+    refresh: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextType | null>({

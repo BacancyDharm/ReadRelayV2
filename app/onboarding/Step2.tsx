@@ -95,7 +95,7 @@ const addGenre = () => {
                 type="button"
                 key={index}
                 onClick={() => removeGenre(g)}
-                className="border border-white rounded-lg px-2 py-1 text-sm text-white flex items-center gap-1"
+                className="border border-white rounded-lg px-2 py-1 text-sm text-white flex items-center gap-1 bg-black"
               >
                 {g} <span>✕</span>
               </button>

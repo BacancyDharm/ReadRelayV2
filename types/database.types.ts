@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_club_status: {
+        Row: {
+          added_at: string
+          book_id: string
+          club_id: string
+          id: string
+          status: Database["public"]["Enums"]["book_status"]
+        }
+        Insert: {
+          added_at?: string
+          book_id: string
+          club_id: string
+          id?: string
+          status?: Database["public"]["Enums"]["book_status"]
+        }
+        Update: {
+          added_at?: string
+          book_id?: string
+          club_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["book_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_club_status_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_club_status_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           authors: string[]
@@ -97,6 +136,47 @@ export type Database = {
           },
         ]
       }
+      schedule_sections: {
+        Row: {
+          club_book_id: string
+          created_at: string
+          deadline: string
+          end_page: number
+          id: string
+          section_number: number
+          start_page: number
+          title: string | null
+        }
+        Insert: {
+          club_book_id: string
+          created_at?: string
+          deadline: string
+          end_page: number
+          id?: string
+          section_number: number
+          start_page: number
+          title?: string | null
+        }
+        Update: {
+          club_book_id?: string
+          created_at?: string
+          deadline?: string
+          end_page?: number
+          id?: string
+          section_number?: number
+          start_page?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_sections_club_book_id_fkey"
+            columns: ["club_book_id"]
+            isOneToOne: false
+            referencedRelation: "book_club_status"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar: string | null
@@ -147,6 +227,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      book_status: "going" | "completed"
       privacy_type: "public" | "private"
       role: "LEADER" | "ADMIN" | "GUEST" | "MEMBER"
     }
@@ -276,6 +357,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      book_status: ["going", "completed"],
       privacy_type: ["public", "private"],
       role: ["LEADER", "ADMIN", "GUEST", "MEMBER"],
     },

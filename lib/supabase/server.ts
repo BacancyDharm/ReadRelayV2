@@ -1,4 +1,5 @@
 
+import { Database } from "@/types/database.types";
 import { createServerClient, } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -6,7 +7,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
 
 export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
-  return createServerClient(
+  return createServerClient<Database>(
     supabaseUrl!,
     supabaseKey!,
     {
