@@ -16,7 +16,8 @@ export async function proxy(req: NextRequest) {
     pathname === "/login" ||
     pathname === "/register" ||
     pathname.startsWith("/auth") ||
-    pathname.startsWith("/api");
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/join");
 
   if (isPublicRoute) return supabaseResponse;
 
@@ -35,11 +36,27 @@ export async function proxy(req: NextRequest) {
   if (role === "LEADER" && !onboardingComplete && pathname !== "/onboarding")
     return redirectTo("/onboarding");
 
-  if (pathname === "/onboarding" && onboardingComplete)
+  if ( role === "LEADER" && pathname === "/onboarding" && onboardingComplete )
     return redirectTo("/dashboard");
 
+  if(pathname.startsWith('/admin')){
+    if(role != 'ADMIN'){
+      return new NextResponse('Forbidden' , {status: 403})
+    }
+
+    return supabaseResponse
+  }
+
+  if(pathname.startsWith('/dashboard')){
+   if(role !== 'LEADER' && role !== 'ADMIN'){
+     return redirectTo('/login')
+   } 
+  }
+  
   return supabaseResponse;
 }
+
+
 
 export const config = {
   matcher: [

@@ -33,11 +33,27 @@ export default function LoginPage() {
       body: JSON.stringify(data),
     });
     
-    console.log("res ok", res.ok)
     if (res.ok) {
       refresh();
       console.log("user after refresh", user);
-      router.push("/onboarding");
+    if(user?.role === "MEMBER") {
+      console.log("user role is member");
+
+      const {data: userClub, error: userClubError} = await supabase.from('club_members').select('id, club_id').eq('user_id', user.id).single();
+
+      if(userClubError || !userClub) {
+        console.log("club not found") 
+      }
+
+      if(userClub?.id) {
+        console.log("club id is", userClub)
+        router.push("/clubs/" + userClub.club_id);
+      }
+
+    }else if(user?.role === "LEADER") {
+           router.push("/onboarding"); 
+    }
+
     } else {
       const error = await res.json();
       console.log(error);

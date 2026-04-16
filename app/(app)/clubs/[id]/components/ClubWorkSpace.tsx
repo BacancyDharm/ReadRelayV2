@@ -6,6 +6,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ScheduleDisplay from "./ScheduleDisplay";
 import ScheduleForm from "./ScheduleForm";
+import MembersTab from "./MembersTab";
 type Club = {
   id: string;
   name: string;
@@ -29,17 +30,23 @@ const ClubWorkSpace = ({
   initialBook,
   initialSections,
   isLeader,
+  initialMembers,
+  initialInvitations
 }: {
   club: Club;
   initialBook: Book;
   initialSections: Section[];
   isLeader: boolean;
+  initialMembers: any[];
+  initialInvitations: any[]
 }) => {
   const [currentBook, setCurrentBook] = useState<Book>(initialBook);
   const [sections, setSections] = useState<Section[]>(initialSections);
   const [showBookSearch, setShowBookSearch] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("schedule");
   const [showScheduleForm, setShowScheduleForm] = useState(false);
+  const [members, setMembers] = useState(initialMembers)
+  const [invitations, setInvitations] = useState(initialInvitations)
 
   const clubBookId = currentBook?.id ?? null;
   const pageCount = currentBook?.books.page_count ?? 0;
@@ -143,7 +150,12 @@ const ClubWorkSpace = ({
               </div>
             )}
             {activeTab === "members" && (
-              <p>Members</p>
+            <MembersTab
+              clubId={club.id}
+              initialMembers={members}
+              initialInvitations={invitations}
+              isLeader={isLeader}
+            />
             )}
             {activeTab === "discussion" && (
               <p>Discussion</p>
